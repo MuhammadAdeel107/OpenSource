@@ -40,3 +40,4 @@ pytest
 * Update tests when behavior changes.
 * Do not introduce dependencies without a clear need.
 >>>>>>> f00387a (hammer):agent.md
+
