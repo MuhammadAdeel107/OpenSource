@@ -1,15 +1,17 @@
 "use client";
 
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent } from "react";
-import { ArrowUpIcon, SquareIcon } from "lucide-react";
+import { ArrowUpIcon, AudioLinesIcon, SquareIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { APP_CONFIG } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
 export function Composer({
   onSend,
   onStop,
+  onVoice,
   streaming,
   disabled,
   placeholder = `Message ${APP_CONFIG.appName}…`,
@@ -17,6 +19,8 @@ export function Composer({
 }: {
   onSend: (text: string) => void;
   onStop: () => void;
+  /** When set, an empty composer shows a "Start voice mode" button instead of Send. */
+  onVoice?: () => void;
   streaming: boolean;
   disabled?: boolean;
   placeholder?: string;
@@ -46,6 +50,7 @@ export function Composer({
   };
 
   const canSend = streaming || (!!value.trim() && !disabled);
+  const showVoice = !!onVoice && !streaming;
 
   return (
     <form
@@ -66,7 +71,23 @@ export function Composer({
         enterKeyHint="send"
         className="field-sizing-content max-h-52 min-h-7 w-full resize-none bg-transparent py-1.5 text-[15px] leading-6 outline-none placeholder:text-muted-foreground"
       />
-      <div className="mt-1 flex items-center justify-end">
+      <div className="mt-1 flex items-center justify-end gap-2">
+        {showVoice && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                type="button"
+                size="icon"
+                onClick={onVoice}
+                aria-label="Start voice mode"
+                className="rounded-full"
+              >
+                <AudioLinesIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Start voice mode</TooltipContent>
+          </Tooltip>
+        )}
         <Button
           type="submit"
           size="icon"
